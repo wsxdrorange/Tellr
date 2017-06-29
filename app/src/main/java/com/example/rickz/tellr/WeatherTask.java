@@ -21,11 +21,8 @@ import java.net.URL;
 
 public class WeatherTask extends AsyncTask<String, Void, JSONArray> {
     private JSONArray query;
-    private Context context;
+
    // TextView tv = (TextView) findViewById(R.id.randomTextView);
-    public WeatherTask(Context context){
-        this.context = context;
-    }
     protected JSONArray doInBackground(String... urls){
             JSONArray array = null;
             String link = urls[0];
@@ -42,9 +39,7 @@ public class WeatherTask extends AsyncTask<String, Void, JSONArray> {
                 JSONObject parentObj = new JSONObject(buffer.toString());
                 JSONObject obj = parentObj.getJSONObject("daily");
                 array = obj.getJSONArray("data");
-                System.out.println(array);
-                System.out.println("array");
-                Log.d("myTag","Message");
+                //System.out.println("CHECK1");
             }
             catch (Exception e){
 
@@ -52,6 +47,10 @@ public class WeatherTask extends AsyncTask<String, Void, JSONArray> {
             return array;
     }
     protected void onPostExecute(JSONArray result){
-        query = result;
+        this.query = result;
+        //System.out.println(query);
+    }
+    public JSONArray getQuery() {
+        return this.query;
     }
 }
