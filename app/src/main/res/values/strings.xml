@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Tellr</string>
+    <string name="button">Button</string>
+    <string name="tell_me">Tell Me!</string>
+</resources>
