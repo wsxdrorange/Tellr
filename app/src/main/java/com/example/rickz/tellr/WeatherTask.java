@@ -3,6 +3,7 @@ package com.example.rickz.tellr;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -42,6 +43,8 @@ public class WeatherTask extends AsyncTask<String, Void, JSONArray> {
                 JSONObject obj = parentObj.getJSONObject("daily");
                 array = obj.getJSONArray("data");
                 System.out.println(array);
+                System.out.println("array");
+                Log.d("myTag","Message");
             }
             catch (Exception e){
 
