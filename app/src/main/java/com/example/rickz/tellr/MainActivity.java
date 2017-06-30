@@ -5,7 +5,10 @@ import android.content.SyncStatusObserver;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -27,10 +30,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URL;
+import java.util.Locale;
 
 
-
-public class MainActivity extends AppCompatActivity implements ConnectionCallbacks, OnConnectionFailedListener, LocationListener {
+public class MainActivity extends AppCompatActivity implements ConnectionCallbacks, OnConnectionFailedListener, LocationListener, TextToSpeech.OnInitListener{
 
     WeatherTask weather;
     String news;
@@ -42,6 +45,9 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
     private LocationRequest mLocationRequest;
     private double currentLatitude;
     private double currentLongitude;
+
+    //TTS Service
+    TextToSpeech engine;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,19 +70,29 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
                 .setFastestInterval(1 * 1000); // 1 second, in milliseconds
 
 
+
+
+
         news = "Hello " + name + ". Here is your daily update. ";
         weather = new WeatherTask();
         weather.execute("https://api.darksky.net/forecast/f87e64592db4c029937c3c7e92f9e115/" + currentLatitude + "," + currentLongitude);
         Log.d("myTag", currentLatitude + " " + currentLatitude);
 
+        //Init TTS
+        engine = new TextToSpeech(this, this);
+
+
+
+
 
         //Tell me Button
         Button tellMe = (Button) findViewById(R.id.tellMe);
         tellMe.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             public void onClick(View v) {
                 addWeatherStatement();
                 System.out.println(news);
-
+                engine.speak(news,TextToSpeech.QUEUE_FLUSH, null, null);
             }
         });
 
@@ -197,5 +213,12 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
     public void onLocationChanged(Location location) {
         currentLatitude = location.getLatitude();
         currentLongitude = location.getLongitude();
+    }
+    @Override
+    public void onInit(int status){
+        if (status == TextToSpeech.SUCCESS){
+            Log.d("TextToSpeech","ONINIT Success");
+            engine.setLanguage(Locale.US);
+        }
     }
 }
