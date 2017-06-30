@@ -63,12 +63,13 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
                 .addApi(LocationServices.API)
                 .build();
 
+        mGoogleApiClient.connect();
+
         // Create the LocationRequest object
         mLocationRequest = LocationRequest.create()
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
                 .setInterval(10 * 1000)        // 10 seconds, in milliseconds
                 .setFastestInterval(1 * 1000); // 1 second, in milliseconds
-
 
 
 
@@ -90,6 +91,7 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
         tellMe.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             public void onClick(View v) {
+                mGoogleApiClient.connect();
                 addWeatherStatement();
                 System.out.println(news);
                 engine.speak(news,TextToSpeech.QUEUE_FLUSH, null, null);
@@ -158,16 +160,15 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
             return;
         }
         Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-
+        Log.d("Location","connected");
         if (location == null) {
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
 
-        } else {
+        }
+        else {
             //If everything went fine lets get latitude and longitude
             currentLatitude = location.getLatitude();
             currentLongitude = location.getLongitude();
-
-            Toast.makeText(this, currentLatitude + " WORKS " + currentLongitude + "", Toast.LENGTH_LONG).show();
         }
     }
 
