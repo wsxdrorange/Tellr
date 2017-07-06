@@ -55,7 +55,9 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
-            return;
+            ActivityCompat.requestPermissions(this,
+                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                    0);
         }
         Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         currentLongitude = location.getLongitude();
