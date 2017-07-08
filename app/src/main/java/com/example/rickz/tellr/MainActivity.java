@@ -28,6 +28,7 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity implements TextToSpeech.OnInitListener {
 
     WeatherTask weather;
+    NewsTask newsTask;
     String news;
     String name = "Rick Zhang";
     double currentLatitude;
@@ -43,9 +44,16 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
 
         Log.d("DEBUG","START");
         news = "Hello " + name + ". Here is your daily update. ";
+
+        //Weather
         weather = new WeatherTask();
         Log.d("DEBUG", currentLatitude + " " + currentLatitude);
         weather.execute("https://api.darksky.net/forecast/f87e64592db4c029937c3c7e92f9e115/" + currentLatitude + "," + currentLongitude);
+
+        //News
+        String [] newsAPI = {"https://newsapi.org/v1/articles?source=cnn&sortBy=top&apiKey=2bc8915e285b49778b1b8314aedcb621","https://newsapi.org/v1/articles?source=espn&sortBy=top&apiKey=2bc8915e285b49778b1b8314aedcb621"," https://newsapi.org/v1/articles?source=mtv-news&sortBy=top&apiKey=2bc8915e285b49778b1b8314aedcb621","https://newsapi.org/v1/articles?source=techcrunch&sortBy=top&apiKey=2bc8915e285b49778b1b8314aedcb621"};
+        newsTask = new NewsTask();
+        newsTask.execute(newsAPI);
 
 
         //Init TTS
@@ -61,6 +69,11 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             public void onClick(View v) {
                 addWeatherStatement();
+                news += "Here is your news for today. ";
+                addNewsStatement();
+
+                //End news
+                news += "Stay productive and have a great day!";
                 System.out.println(news);
                 engine.speak(news,TextToSpeech.QUEUE_FLUSH, null, null);
             }
@@ -87,6 +100,40 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+    public void addNewsStatement() {
+        String headline, description;
+
+        JSONArray [] array = newsTask.getQuery();
+            try {
+                //General News
+                JSONArray currArr = array[0];
+                headline = currArr.getJSONObject(0).getString("title");
+                description = currArr.getJSONObject(0).getString("description");
+                news += headline + ". " + description + " ";
+
+                //sports
+                currArr = array[1];
+                headline = currArr.getJSONObject(0).getString("title");
+                description = currArr.getJSONObject(0).getString("description");
+                news += "Sports. " + headline + ". " + description + " ";
+
+                //entertainment
+                currArr = array[2];
+                headline = currArr.getJSONObject(0).getString("title");
+                description = currArr.getJSONObject(0).getString("description");
+                news += "Entertainment. " + headline + ". " + description + " ";
+
+                //tech
+                currArr = array[3];
+                headline = currArr.getJSONObject(0).getString("title");
+                description = currArr.getJSONObject(0).getString("description");
+                news += "Tech. " + headline + ". " + description + " ";
+            }
+            catch(JSONException e) {
+                e.printStackTrace();
+                ;
+            }
     }
 
 
