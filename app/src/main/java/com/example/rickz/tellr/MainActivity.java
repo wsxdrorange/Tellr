@@ -68,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
                 .build();
+        Log.d("Location","Google Client Connected: " + mGoogleApiClient.isConnected());
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
@@ -86,6 +87,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                         // Got last known location. In some rare situations this can be null.
                         if (location != null) {
                             // ...
+                            Log.d("Location","Location Null");
+
                         }
                     }
                 });
